@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -40,7 +41,7 @@ public class Usuario implements UserDetails{
 	
 	
 	@NotBlank(message = "A inserção do e-mail é obrigatória!")
-	//@Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$", message = "Insira um e-mail válido!")
+	@org.hibernate.validator.constraints.Email
 	private String login;
 	
 	@NotBlank(message =  "A inserção da senha é obrigatória!")
