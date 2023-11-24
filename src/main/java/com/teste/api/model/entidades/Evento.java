@@ -33,7 +33,7 @@ public class Evento {
 	private Local local;
 
 	@NotBlank(message = "A inserção do nome do evento é obrigatória!")
-	private String nomeDoEvento;
+	private String nome;
 
 	@OneToMany(mappedBy = "evento")
 	private List<Ingresso> ingressos;
@@ -45,7 +45,7 @@ public class Evento {
 	@Lob
 	private byte[] imagem;
 
-	private String nome;
+	
 	private String descricao;
 	private Date data;
 	private String atracao;
@@ -84,13 +84,6 @@ public class Evento {
 		this.local = local;
 	}
 
-	public String getNomeDoEvento() {
-		return nomeDoEvento;
-	}
-
-	public void setNomeDoEvento(String nomeDoEvento) {
-		this.nomeDoEvento = nomeDoEvento;
-	}
 
 	public List<Ingresso> getIngressos() {
 		return ingressos;

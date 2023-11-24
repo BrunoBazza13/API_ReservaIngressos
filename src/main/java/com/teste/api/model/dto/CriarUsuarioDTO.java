@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.br.CPF;
 
-import com.teste.api.model.entidades.ItemCarrinho;
+import com.teste.api.model.entidades.Reservas;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +21,7 @@ public class CriarUsuarioDTO {
 	
 	
 	@OneToMany(mappedBy = "usuario")
-    private List<ItemCarrinho> itemCarrinho = new ArrayList<ItemCarrinho>();
+    private List<Reservas> itemCarrinho = new ArrayList<Reservas>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,11 +50,11 @@ public class CriarUsuarioDTO {
 		super();
 	}
 
-	public List<ItemCarrinho> getItemCarrinho() {
+	public List<Reservas> getItemCarrinho() {
 		return itemCarrinho;
 	}
 
-	public void setItemCarrinho(List<ItemCarrinho> itemCarrinho) {
+	public void setItemCarrinho(List<Reservas> itemCarrinho) {
 		this.itemCarrinho = itemCarrinho;
 	}
 

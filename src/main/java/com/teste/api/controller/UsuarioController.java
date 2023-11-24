@@ -1,8 +1,6 @@
 package com.teste.api.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,15 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teste.api.exception.InvalidCredentialsException;
-import com.teste.api.exception.NomeIngressoSetorInvalidoException;
 import com.teste.api.exception.RepositoryNotInjectedException;
 import com.teste.api.exception.ServiceNotInjectedException;
 import com.teste.api.exception.UsuarioNotFoundException;
 import com.teste.api.model.dto.AuthenticationDTO;
-import com.teste.api.model.entidades.ItemCarrinho;
+import com.teste.api.model.entidades.Ingresso;
+import com.teste.api.model.entidades.Reservas;
 import com.teste.api.model.entidades.Usuario;
 import com.teste.api.service.UsuarioService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @RestController
@@ -36,6 +35,9 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioService usuarioService;
 
+	@Autowired
+	private HttpSession session;
+
 	@PostMapping("/login")
 	public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
 
@@ -43,23 +45,39 @@ public class UsuarioController {
 
 		if (!loginUsuario) {
 			throw new InvalidCredentialsException("Senha ou email invalidos");
+
 		} else {
-			List<ItemCarrinho> reservas = usuarioService.obterIdCarrinhoDoUsuario(data.login());
+			List<Reservas> reservas = usuarioService.obterIdCarrinhoDoUsuario(data.login());
 
 			if (!reservas.isEmpty()) {
 
-				Map<String, Object> response = new HashMap<>();
-				response.put("message", "Login realizado!");
-				response.put("carrinhos", reservas);
+				session.setAttribute("carrinho", reservas);
 
-				return ResponseEntity.status(HttpStatus.OK).body(response);
+				return ResponseEntity.status(HttpStatus.OK).body("login bem sucedido");
 			}
 
-			return ResponseEntity.status(HttpStatus.OK).body("Login realizado!");
+			// return ResponseEntity.status(HttpStatus.OK).body("Login realizado!");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
 		}
 	}
 
-	@PostMapping("/criarUsuario") // throws NomeIngressoSetorInvalidoException
+//	@GetMapping("/carrinho")
+//	public ResponseEntity<?> getCarrinho(HttpSession session) {
+//		List<Reservas> carrinhos = (List<Reservas>) session.getAttribute("carrinho");
+//
+//	
+//		for (Reservas carrinho : carrinhos) {
+//		System.out.println(carrinho.getId()); 
+//		}
+//
+//		if (carrinhos != null && !carrinhos.isEmpty()) {
+//			return ResponseEntity.ok(carrinhos);
+//		} else {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum carrinho encontrado");
+//		}
+//	}
+
+	@PostMapping(path = "/criarUsuario") // throws NomeIngressoSetorInvalidoException
 	public ResponseEntity<String> criaUsuario(@RequestBody @Valid Usuario data) {
 
 		Usuario usuario = usuarioService.criaUsuario(data);
@@ -70,32 +88,32 @@ public class UsuarioController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body("Usuário criado com sucesso!");
 	}
-
-	@GetMapping("/buscaPorID/{id}")
-	public ResponseEntity<Usuario> getUsuarioPorId(@PathVariable int id)
-			throws ServiceNotInjectedException, RepositoryNotInjectedException {
-		Usuario usuarioId = usuarioService.obterUsuarioPorId(id);
-
-		if (usuarioId == null) {
-			throw new UsuarioNotFoundException("Usuario não existe!");
-		} else {
-			return ResponseEntity.ok(usuarioId);
-		}
-	}
-
-	@GetMapping
-	public ResponseEntity<List<Usuario>> getListUsuario() throws RepositoryNotInjectedException {
-		List<Usuario> usuarios = usuarioService.listClient();
-		return new ResponseEntity<List<Usuario>>(usuarios, HttpStatus.OK);
-
-	}
-
-	@PutMapping
-	public ResponseEntity<Usuario> getAtualizaUsuario(@RequestBody Usuario usuario)
-			throws RepositoryNotInjectedException {
-		usuarioService.atualizaUsuario(usuario);
-		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
-
-	}
+//
+//	@GetMapping("/buscaPorID/{id}")
+//	public ResponseEntity<Usuario> getUsuarioPorId(@PathVariable int id)
+//			throws ServiceNotInjectedException, RepositoryNotInjectedException {
+//		Usuario usuarioId = usuarioService.obterUsuarioPorId(id);
+//
+//		if (usuarioId == null) {
+//			throw new UsuarioNotFoundException("Usuario não existe!");
+//		} else {
+//			return ResponseEntity.ok(usuarioId);
+//		}
+//	}
+//
+//	@GetMapping
+//	public ResponseEntity<List<Usuario>> getListUsuario() throws RepositoryNotInjectedException {
+//		List<Usuario> usuarios = usuarioService.listClient();
+//		return new ResponseEntity<List<Usuario>>(usuarios, HttpStatus.OK);
+//
+//	}
+//
+//	@PutMapping
+//	public ResponseEntity<Usuario> getAtualizaUsuario(@RequestBody Usuario usuario)
+//			throws RepositoryNotInjectedException {
+//		usuarioService.atualizaUsuario(usuario);
+//		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
+//
+//	}
 
 }

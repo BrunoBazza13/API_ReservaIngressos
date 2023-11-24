@@ -30,7 +30,7 @@ public class Usuario implements UserDetails{
 	private static final long serialVersionUID = 1L;
 
 	@OneToMany(mappedBy = "usuario")
-    private List<ItemCarrinho> itemCarrinho = new ArrayList<ItemCarrinho>();
+    private List<Reservas> itemCarrinho = new ArrayList<Reservas>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -106,10 +106,10 @@ public class Usuario implements UserDetails{
 	public boolean isEnabled() {
 		return false;
 	}
-	public List<ItemCarrinho> getItemCarrinho() {
+	public List<Reservas> getItemCarrinho() {
 		return itemCarrinho;
 	}
-	public void setItemCarrinho(List<ItemCarrinho> itemCarrinho) {
+	public void setItemCarrinho(List<Reservas> itemCarrinho) {
 		this.itemCarrinho = itemCarrinho;
 	}
 	public int getId() {

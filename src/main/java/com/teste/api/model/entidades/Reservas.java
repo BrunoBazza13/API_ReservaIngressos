@@ -20,7 +20,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class ItemCarrinho {
+public class Reservas {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,12 +37,18 @@ public class ItemCarrinho {
 	private int quantidadeIngresso;
 
 	private LocalDateTime dataCriacao;
+	
+	private String evento;
+	
+	private String setor;
+	
+	private double precoTotal;
 
-	public ItemCarrinho() {
+	public Reservas() {
 
 	}
 
-	public ItemCarrinho(Set<Ingresso> ingressos, Pedido pedido, Usuario usuario, Setores setor, int quantidadeReserva,
+	public Reservas(Set<Ingresso> ingressos, Pedido pedido, Usuario usuario, Setores setor, int quantidadeReserva,
 			LocalDateTime dataCriacao) {
 		super();
 		this.ingressos = ingressos;
@@ -53,8 +59,12 @@ public class ItemCarrinho {
 	public boolean contemIngresso(Ingresso ingresso) {
 		return this.ingressos.contains(ingresso);
 	}
+	
+	public double precoTotal(double quantidadeIngresso, double preco) {
+		return this.precoTotal = quantidadeIngresso * preco;
+	}
 
-	public ItemCarrinho(Usuario usuario) {
+	public Reservas(Usuario usuario) {
 		this.usuario = usuario;
 	}
 
@@ -97,5 +107,29 @@ public class ItemCarrinho {
 	public void setDataCriacao(LocalDateTime dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
+
+	public double getPrecoTotal() {
+		return precoTotal;
+	}
+
+	public String getEvento() {
+		return evento;
+	}
+
+	public void setEvento(String evento) {
+		this.evento = evento;
+	}
+
+	public String getSetor() {
+		return setor;
+	}
+
+	public void setSetor(String setor) {
+		this.setor = setor;
+	}
+
+
+	
+	
 
 }

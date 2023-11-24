@@ -2,6 +2,8 @@ package com.teste.api.model.dto;
 
 import java.io.Serializable;
 
+import com.teste.api.model.entidades.Evento;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,9 +15,43 @@ public class IngressoDTO implements Serializable {
 
 	private String nome;
 
-	private String status;
+	private Evento evento;
+	
+	private String valor;
+	
+	
 
-	private EventoInicialDTO evento;
+
+	public String getValor() {
+		return valor;
+	}
+
+	public void setValor(String valor) {
+		this.valor = valor;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	
+	public String getEvento() {
+		return evento.getNome();
+	}
+
+	public void setEvento(Evento evento) {
+		this.evento = evento;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
 
 
 

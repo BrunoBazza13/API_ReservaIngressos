@@ -1,7 +1,7 @@
 package com.teste.api.model.dto;
 
 import com.teste.api.model.entidades.Ingresso;
-import com.teste.api.model.entidades.ItemCarrinho;
+import com.teste.api.model.entidades.Reservas;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,12 +11,13 @@ import lombok.Setter;
 @Setter
 public class CriaItemCarrinho {
 
-	private ItemCarrinho reserva;
+	private Reservas reserva;
     private Ingresso ingresso;
-	public ItemCarrinho getReserva() {
+
+    public Reservas getReserva() {
 		return reserva;
 	}
-	public void setReserva(ItemCarrinho reserva) {
+	public void setReserva(Reservas reserva) {
 		this.reserva = reserva;
 	}
 	public Ingresso getIngresso() {

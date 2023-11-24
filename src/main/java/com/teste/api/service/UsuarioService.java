@@ -3,7 +3,7 @@ package com.teste.api.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
+//import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.teste.api.exception.RepositoryNotInjectedException;
 import com.teste.api.exception.UsuarioNotFoundException;
-import com.teste.api.model.entidades.ItemCarrinho;
+import com.teste.api.model.entidades.Reservas;
 import com.teste.api.model.entidades.Usuario;
-import com.teste.api.model.repository.ItemCarrinhoRepository;
+//import com.teste.api.model.repository.ItemCarrinhoRepository;
+import com.teste.api.model.repository.ReservaRepository;
 import com.teste.api.model.repository.UsuarioRepository;
 
 @Service
@@ -23,7 +24,7 @@ public class UsuarioService {
 	private UsuarioRepository usuarioRepository;
 
 	@Autowired
-	private ItemCarrinhoRepository itemCarrinhoRepository;
+	private ReservaRepository reservaRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -52,9 +53,9 @@ public class UsuarioService {
 
 		Usuario usuario = usuarioRepository.save(novoUsuario);
 
-		ItemCarrinho itemCarrinho = new ItemCarrinho(usuario);
+		Reservas itemCarrinho = new Reservas(usuario);
 
-		itemCarrinhoRepository.save(itemCarrinho);
+		reservaRepository.save(itemCarrinho);
 
 		return novoUsuario;
 
@@ -73,12 +74,12 @@ public class UsuarioService {
 		return false;
 	}
 	
-	public List<ItemCarrinho> obterIdCarrinhoDoUsuario(String login) {
+	public List<Reservas> obterIdCarrinhoDoUsuario(String login) {
 	    Usuario usuario = usuarioRepository.findByLogin(login);
 	   
 	    if (usuario != null && usuario.getItemCarrinho() != null && !usuario.getItemCarrinho().isEmpty()) {
 	       
-	   	List<ItemCarrinho> reservas =  usuario.getItemCarrinho();
+	   	List<Reservas> reservas =  usuario.getItemCarrinho();
 	   	
 	   	return reservas;
 

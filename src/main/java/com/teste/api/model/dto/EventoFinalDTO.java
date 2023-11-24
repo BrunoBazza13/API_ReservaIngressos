@@ -7,21 +7,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EventoFinalDTO {
-  
-	
-	private String nome;
-	private Date data;
-	private String descricao;
-	private LocalDTO local;
-	private byte[] imagem;
 
-	public EventoFinalDTO() {
-		super();
-		
+	private String nome;
+
+	public String getNome() {
+		return nome;
 	}
 
-	
-	
-	
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
 }

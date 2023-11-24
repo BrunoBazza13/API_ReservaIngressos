@@ -31,7 +31,7 @@ public class Ingresso {
 	private Setores setor;
 
 	@ManyToMany(mappedBy = "ingressos")
-	private Set<ItemCarrinho> itemCarrinho = new HashSet<ItemCarrinho>();
+	private Set<Reservas> itemCarrinho = new HashSet<Reservas>();
 
 	@NotBlank(message = "Por favor inserir o nome!")
 	private String nome;
@@ -48,7 +48,7 @@ public class Ingresso {
 
 	}
 
-	public Ingresso(Evento evento, Setores setor, Set<ItemCarrinho> reserva, String nome, double valor,
+	public Ingresso(Evento evento, Setores setor, Set<Reservas> reserva, String nome, double valor,
 			String tipoIngresso, String status) {
 		super();
 		this.evento = evento;
@@ -84,11 +84,11 @@ public class Ingresso {
 		this.setor = setor;
 	}
 
-	public Set<ItemCarrinho> getItemCarrinho() {
+	public Set<Reservas> getItemCarrinho() {
 		return itemCarrinho;
 	}
 
-	public void setItemCarrinho(Set<ItemCarrinho> itemCarrinho) {
+	public void setItemCarrinho(Set<Reservas> itemCarrinho) {
 		this.itemCarrinho = itemCarrinho;
 	}
 

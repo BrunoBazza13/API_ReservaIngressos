@@ -25,13 +25,13 @@ public class Pedido {
 	//@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "reserva_id")
-	private ItemCarrinho reserva; // Um para um com Reserva após o pagamento
+	private Reservas reserva; // Um para um com Reserva após o pagamento
 
 	private String status; // Confirmado, Pendente
 
 	private LocalDateTime dataCriacao;
 
-	public Pedido(String status, LocalDateTime dataCriacao, ItemCarrinho reserva) {
+	public Pedido(String status, LocalDateTime dataCriacao, Reservas reserva) {
 		super();
 		this.status = status;
 		this.dataCriacao = dataCriacao;
