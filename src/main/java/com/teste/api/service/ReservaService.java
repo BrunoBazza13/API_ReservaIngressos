@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.teste.api.exception.NomeIngressoSetorInvalidoException;
 import com.teste.api.exception.RepositoryNotInjectedException;
 import com.teste.api.exception.SetorNotFoundException;
@@ -56,17 +56,14 @@ public class ReservaService {
 	public int totalIngressos(int setorId) {
 		return reservaRepository.getTotalQuantidadePorSetor(setorId);
 	}
-	
 
-
-	public boolean estaCheio(Setores setor, Reservas itensCarrinho, Ingresso ingresso)
-			throws NomeIngressoSetorInvalidoException, SetorNotFoundException, RepositoryNotInjectedException {
+	public boolean estaCheio(Setores setor, Reservas itensCarrinho, Ingresso ingresso)	throws NomeIngressoSetorInvalidoException, SetorNotFoundException, RepositoryNotInjectedException {
 
 		int total = totalIngressos(setor.getId());
 		total += itensCarrinho.getIngressos().size();
-		
-		while (total > setor.getQuantidadePessoas()) { 
-														
+
+		while (total > setor.getQuantidadePessoas()) {
+
 			total--; // (rever logica)
 
 			ingresso.setStatus("Indiponivel");
@@ -77,7 +74,8 @@ public class ReservaService {
 		return true;
 	}
 
-	public Reservas adicionaAosMeusIngressos(Reservas itemCarrinho) throws RepositoryNotInjectedException, NomeIngressoSetorInvalidoException, SetorNotFoundException {
+	public Reservas adicionaAosMeusIngressos(Reservas itemCarrinho)
+			throws RepositoryNotInjectedException, NomeIngressoSetorInvalidoException, SetorNotFoundException {
 
 		Usuario usuario = usuarioService.obterUsuarioPorId(itemCarrinho.getUsuario().getId());
 

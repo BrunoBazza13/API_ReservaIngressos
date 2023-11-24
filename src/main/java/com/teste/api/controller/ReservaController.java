@@ -32,9 +32,6 @@ public class ReservaController {
 	@Autowired
 	private ReservaService reservaService;
 
-//	@Autowired
-//	private ItemCarrinhoService itemCarrinhoService;
-
 	@PostMapping
 	public ResponseEntity<Reservas> criarItemCarrinho(@Valid @RequestBody Reservas reserva)
 			throws RepositoryNotInjectedException, NomeIngressoSetorInvalidoException, SetorNotFoundException {
@@ -57,9 +54,7 @@ public class ReservaController {
 		if (carrinhos == null) {
 			return ResponseEntity.notFound().build();
 		}
-
 		return new ResponseEntity<ReservaDTO>(carrinhos, HttpStatus.OK);
-
 	}
 
 	@GetMapping
@@ -69,6 +64,4 @@ public class ReservaController {
 		return new ResponseEntity<List<ReservaDTO>>(reservas, HttpStatus.OK);
 	}
 
-	
-	
 }

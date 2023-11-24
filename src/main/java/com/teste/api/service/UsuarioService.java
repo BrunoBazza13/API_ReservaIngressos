@@ -2,7 +2,9 @@ package com.teste.api.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 //import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.teste.api.exception.RepositoryNotInjectedException;
 import com.teste.api.exception.UsuarioNotFoundException;
+import com.teste.api.model.dto.ReservaDTO;
 import com.teste.api.model.entidades.Reservas;
 import com.teste.api.model.entidades.Usuario;
 //import com.teste.api.model.repository.ItemCarrinhoRepository;
@@ -28,6 +31,12 @@ public class UsuarioService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+//	@Autowired
+//	private ReservaService reservaService;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 
 	public List<Usuario> listClient() throws RepositoryNotInjectedException {
 		if (usuarioRepository == null) {
@@ -73,20 +82,20 @@ public class UsuarioService {
 		}
 		return false;
 	}
-	
-	public List<Reservas> obterIdCarrinhoDoUsuario(String login) {
-	    Usuario usuario = usuarioRepository.findByLogin(login);
-	   
-	    if (usuario != null && usuario.getItemCarrinho() != null && !usuario.getItemCarrinho().isEmpty()) {
-	       
-	   	List<Reservas> reservas =  usuario.getItemCarrinho();
-	   	
-	   	return reservas;
 
-	    }
-	    return null;
+	public List<ReservaDTO> obterIdCarrinhoDoUsuario(String login) {
+		Usuario usuario = usuarioRepository.findByLogin(login);
+
+		if (usuario != null && usuario.getItemCarrinho() != null && !usuario.getItemCarrinho().isEmpty()) {
+			List<Reservas> reservas = usuario.getItemCarrinho();
+
+			 return reservas.stream()
+			            .map(reserva -> modelMapper.map(reserva, ReservaDTO.class))
+			            .collect(Collectors.toList());
+
+		}
+		return null;
 	}
-
 
 	public Usuario obterUsuarioPorId(Integer id) throws RepositoryNotInjectedException {
 		if (usuarioRepository == null) {

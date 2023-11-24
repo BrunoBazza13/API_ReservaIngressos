@@ -19,6 +19,7 @@ import com.teste.api.exception.RepositoryNotInjectedException;
 import com.teste.api.exception.ServiceNotInjectedException;
 import com.teste.api.exception.UsuarioNotFoundException;
 import com.teste.api.model.dto.AuthenticationDTO;
+import com.teste.api.model.dto.ReservaDTO;
 import com.teste.api.model.entidades.Ingresso;
 import com.teste.api.model.entidades.Reservas;
 import com.teste.api.model.entidades.Usuario;
@@ -47,7 +48,7 @@ public class UsuarioController {
 			throw new InvalidCredentialsException("Senha ou email invalidos");
 
 		} else {
-			List<Reservas> reservas = usuarioService.obterIdCarrinhoDoUsuario(data.login());
+			List<ReservaDTO> reservas = usuarioService.obterIdCarrinhoDoUsuario(data.login());
 
 			if (!reservas.isEmpty()) {
 
@@ -61,21 +62,21 @@ public class UsuarioController {
 		}
 	}
 
-//	@GetMapping("/carrinho")
-//	public ResponseEntity<?> getCarrinho(HttpSession session) {
-//		List<Reservas> carrinhos = (List<Reservas>) session.getAttribute("carrinho");
-//
-//	
-//		for (Reservas carrinho : carrinhos) {
-//		System.out.println(carrinho.getId()); 
-//		}
-//
-//		if (carrinhos != null && !carrinhos.isEmpty()) {
-//			return ResponseEntity.ok(carrinhos);
-//		} else {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum carrinho encontrado");
-//		}
-//	}
+	@GetMapping("/carrinho")
+	public ResponseEntity<?> getCarrinho(HttpSession session) {
+		List<ReservaDTO> carrinhos = (List<ReservaDTO>) session.getAttribute("carrinho");
+
+	
+		for (ReservaDTO carrinho : carrinhos) {
+		System.out.println(carrinho.getQuantidadeIngresso()); 
+		}
+
+		if (carrinhos != null && !carrinhos.isEmpty()) {
+			return ResponseEntity.ok(carrinhos);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum carrinho encontrado");
+		}
+	}
 
 	@PostMapping(path = "/criarUsuario") // throws NomeIngressoSetorInvalidoException
 	public ResponseEntity<String> criaUsuario(@RequestBody @Valid Usuario data) {

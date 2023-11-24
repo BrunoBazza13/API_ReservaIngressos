@@ -9,7 +9,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 	
 	Usuario findByCpf(String cpf);
 
-//	@Query("SELECT c FROM Cliente c WHERE c.email = :email")
-//    Optional<Usuario> findByEmail(@Param("email") String email);
-	
+
 }
