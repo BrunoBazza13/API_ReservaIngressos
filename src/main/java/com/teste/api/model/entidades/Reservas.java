@@ -38,9 +38,6 @@ public class Reservas {
 
 	private LocalDateTime dataCriacao;
 	
-	private String evento;
-	
-	private String setor;
 	
 	private double precoTotal;
 
@@ -112,24 +109,6 @@ public class Reservas {
 		return precoTotal;
 	}
 
-	public String getEvento() {
-		return evento;
-	}
-
-	public void setEvento(String evento) {
-		this.evento = evento;
-	}
-
-	public String getSetor() {
-		return setor;
-	}
-
-	public void setSetor(String setor) {
-		this.setor = setor;
-	}
-
-
-	
 	
 
 }

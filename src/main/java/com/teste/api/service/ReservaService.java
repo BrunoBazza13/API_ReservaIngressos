@@ -48,8 +48,9 @@ public class ReservaService {
 				.collect(Collectors.toList());
 	}
 
-	public ReservaDTO retornaReservaPorId(int id) {
-		Reservas reserva = reservaRepository.findById(id).get();
+	public ReservaDTO retornaReservaDTO(Reservas reserva) {
+		reservaRepository.save(reserva);
+		
 		return modelMapper.map(reserva, ReservaDTO.class);
 	}
 
@@ -74,8 +75,7 @@ public class ReservaService {
 		return true;
 	}
 
-	public Reservas adicionaAosMeusIngressos(Reservas itemCarrinho)
-			throws RepositoryNotInjectedException, NomeIngressoSetorInvalidoException, SetorNotFoundException {
+	public ReservaDTO adicionaAosMeusIngressos(Reservas itemCarrinho)	throws RepositoryNotInjectedException, NomeIngressoSetorInvalidoException, SetorNotFoundException {
 
 		Usuario usuario = usuarioService.obterUsuarioPorId(itemCarrinho.getUsuario().getId());
 
@@ -104,8 +104,8 @@ public class ReservaService {
 			reservaExistente.setQuantidadeIngresso(novaQuantidade);
 			reservaExistente.setDataCriacao(LocalDateTime.now());
 			reservaExistente.precoTotal(optionalIngresso.get().getValor(), contador);
-
-			return reservaRepository.save(reservaExistente);
+			
+			return retornaReservaDTO(reservaExistente);
 
 		} else {
 
@@ -114,7 +114,7 @@ public class ReservaService {
 			novaReserva.setQuantidadeIngresso(contador);
 			novaReserva.setUsuario(usuario);
 
-			return reservaRepository.save(novaReserva);
+			return retornaReservaDTO(novaReserva);
 		}
 
 	}

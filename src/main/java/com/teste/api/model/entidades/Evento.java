@@ -148,5 +148,7 @@ public class Evento {
 	public void setTotalPessoas(int totalPessoas) {
 		this.totalPessoas = totalPessoas;
 	}
+	
+	
 
 }

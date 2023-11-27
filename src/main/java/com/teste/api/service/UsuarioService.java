@@ -64,7 +64,7 @@ public class UsuarioService {
 
 		Reservas itemCarrinho = new Reservas(usuario);
 
-		reservaRepository.save(itemCarrinho);
+		//reservaRepository.save(itemCarrinho);
 
 		return novoUsuario;
 

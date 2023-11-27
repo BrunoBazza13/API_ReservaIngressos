@@ -50,15 +50,15 @@ public class UsuarioController {
 		} else {
 			List<ReservaDTO> reservas = usuarioService.obterIdCarrinhoDoUsuario(data.login());
 
-			if (!reservas.isEmpty()) {
+		//	if (!reservas.isEmpty()) {
 
 				session.setAttribute("carrinho", reservas);
 
 				return ResponseEntity.status(HttpStatus.OK).body("login bem sucedido");
-			}
+			//}
 
 			// return ResponseEntity.status(HttpStatus.OK).body("Login realizado!");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
+			//return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
 		}
 	}
 
@@ -66,15 +66,10 @@ public class UsuarioController {
 	public ResponseEntity<?> getCarrinho(HttpSession session) {
 		List<ReservaDTO> carrinhos = (List<ReservaDTO>) session.getAttribute("carrinho");
 
-	
-		for (ReservaDTO carrinho : carrinhos) {
-		System.out.println(carrinho.getQuantidadeIngresso()); 
-		}
-
 		if (carrinhos != null && !carrinhos.isEmpty()) {
 			return ResponseEntity.ok(carrinhos);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum carrinho encontrado");
+		} else {  
+			return ResponseEntity.status(HttpStatus.OK).body("Não há ingressos reservados");
 		}
 	}
 
