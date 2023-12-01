@@ -7,21 +7,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teste.api.exception.InvalidCredentialsException;
-import com.teste.api.exception.RepositoryNotInjectedException;
-import com.teste.api.exception.ServiceNotInjectedException;
-import com.teste.api.exception.UsuarioNotFoundException;
 import com.teste.api.model.dto.AuthenticationDTO;
-import com.teste.api.model.dto.ReservaDTO;
-import com.teste.api.model.entidades.Ingresso;
-import com.teste.api.model.entidades.Reservas;
+import com.teste.api.model.dto.IngressoDTO;
+import com.teste.api.model.dto.ReservasDTO;
+import com.teste.api.model.entidades.Evento;
 import com.teste.api.model.entidades.Usuario;
 import com.teste.api.service.UsuarioService;
 
@@ -48,27 +43,22 @@ public class UsuarioController {
 			throw new InvalidCredentialsException("Senha ou email invalidos");
 
 		} else {
-			List<ReservaDTO> reservas = usuarioService.obterIdCarrinhoDoUsuario(data.login());
+			List<ReservasDTO> reservas = usuarioService.obterIdCarrinhoDoUsuario(data.login());
 
-		//	if (!reservas.isEmpty()) {
+			session.setAttribute("carrinho", reservas);
 
-				session.setAttribute("carrinho", reservas);
+			return ResponseEntity.status(HttpStatus.OK).body("login bem sucedido");
 
-				return ResponseEntity.status(HttpStatus.OK).body("login bem sucedido");
-			//}
-
-			// return ResponseEntity.status(HttpStatus.OK).body("Login realizado!");
-			//return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
 		}
 	}
 
 	@GetMapping("/carrinho")
 	public ResponseEntity<?> getCarrinho(HttpSession session) {
-		List<ReservaDTO> carrinhos = (List<ReservaDTO>) session.getAttribute("carrinho");
+		List<ReservasDTO> carrinhos = (List<ReservasDTO>) session.getAttribute("carrinho");
 
 		if (carrinhos != null && !carrinhos.isEmpty()) {
 			return ResponseEntity.ok(carrinhos);
-		} else {  
+		} else {
 			return ResponseEntity.status(HttpStatus.OK).body("Não há ingressos reservados");
 		}
 	}

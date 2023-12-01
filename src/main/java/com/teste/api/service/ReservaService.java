@@ -1,6 +1,7 @@
 package com.teste.api.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,15 +10,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.teste.api.exception.NomeIngressoSetorInvalidoException;
-import com.teste.api.exception.RepositoryNotInjectedException;
-import com.teste.api.exception.SetorNotFoundException;
-import com.teste.api.model.dto.ReservaDTO;
+import com.teste.api.model.dto.ReservasDTO;
 import com.teste.api.model.entidades.Ingresso;
 import com.teste.api.model.entidades.Reservas;
 import com.teste.api.model.entidades.Setores;
 import com.teste.api.model.entidades.Usuario;
 import com.teste.api.model.repository.ReservaRepository;
+
+import io.jsonwebtoken.lang.Collections;
 
 @Service
 public class ReservaService {
@@ -42,26 +42,28 @@ public class ReservaService {
 		this.reservaRepository = reservaRepository;
 	}
 
-	public List<ReservaDTO> listaReserva() {
+	public List<ReservasDTO> listaReserva() {
 		List<Reservas> reservas = reservaRepository.findAll();
-		return reservas.stream().map(reserva -> modelMapper.map(reserva, ReservaDTO.class))
+		return reservas.stream().map(reserva -> modelMapper.map(reserva, ReservasDTO.class))
 				.collect(Collectors.toList());
 	}
 
-	public ReservaDTO retornaReservaDTO(Reservas reserva) {
-		reservaRepository.save(reserva);
-		
-		return modelMapper.map(reserva, ReservaDTO.class);
+	public List<ReservasDTO> retornaReservaDTO(List<Reservas> reservas) {
+
+		//return modelMapper.map(reserva, ReservasDTO.class);
+		return reservas.stream().map(reserva -> modelMapper.map(reserva, ReservasDTO.class))
+				.collect(Collectors.toList());
+
 	}
 
 	public int totalIngressos(int setorId) {
 		return reservaRepository.getTotalQuantidadePorSetor(setorId);
 	}
 
-	public boolean estaCheio(Setores setor, Reservas itensCarrinho, Ingresso ingresso)	throws NomeIngressoSetorInvalidoException, SetorNotFoundException, RepositoryNotInjectedException {
+	public boolean estaCheio(Setores setor, Reservas itensCarrinho, Ingresso ingresso) {
 
 		int total = totalIngressos(setor.getId());
-		total += itensCarrinho.getIngressos().size();
+		total += itensCarrinho.getIngresso().size();
 
 		while (total > setor.getQuantidadePessoas()) {
 
@@ -75,47 +77,73 @@ public class ReservaService {
 		return true;
 	}
 
-	public ReservaDTO adicionaAosMeusIngressos(Reservas itemCarrinho)	throws RepositoryNotInjectedException, NomeIngressoSetorInvalidoException, SetorNotFoundException {
+	public List<Reservas> adicionaAosMeusIngressos(Reservas itemCarrinho) {
 
 		Usuario usuario = usuarioService.obterUsuarioPorId(itemCarrinho.getUsuario().getId());
 
-		Reservas novaReserva = new Reservas();
+		List<Reservas> reservasCriadas = new ArrayList<>();
+
 		Optional<Setores> setor = null;
 		Optional<Ingresso> optionalIngresso = null;
-		int contador = 0;
 
-		for (Ingresso ingressoRequest : itemCarrinho.getIngressos()) {
+
+		for (Ingresso ingressoRequest : itemCarrinho.getIngresso()) {
 			optionalIngresso = ingressoService.obterIngressoPorId(ingressoRequest.getId());
+
+			Ingresso ingresso = optionalIngresso.get();
+			
+			int quantidade = ingressoRequest.getQuantidade();
 
 			setor = setorService.obetemSetorPorId(optionalIngresso.get().getSetor().getId());
 
 			if (!estaCheio(setor.get(), itemCarrinho, optionalIngresso.get())) {
 				return null;
 			}
-			contador++;
-		}
+		
 
-		Reservas reservaExistente = reservaRepository.findByUsuarioAndIngressos_Id(usuario,
-				optionalIngresso.get().getId());
-
-		if (reservaExistente != null) {
-
-			int novaQuantidade = reservaExistente.getQuantidadeIngresso() + contador;
-			reservaExistente.setQuantidadeIngresso(novaQuantidade);
-			reservaExistente.setDataCriacao(LocalDateTime.now());
-			reservaExistente.precoTotal(optionalIngresso.get().getValor(), contador);
-			
-			return retornaReservaDTO(reservaExistente);
-
-		} else {
-
-			novaReserva.setIngressos(itemCarrinho.getIngressos());
+			Reservas novaReserva = new Reservas();
+			novaReserva.setIngresso(itemCarrinho.getIngresso());
 			novaReserva.setDataCriacao(LocalDateTime.now());
-			novaReserva.setQuantidadeIngresso(contador);
+			novaReserva.setQuantidadeIngresso(quantidade);
+			novaReserva.precoTotal(ingresso.getValor(), quantidade);
+			novaReserva.setEvento(ingresso.getEvento().getNomeEvento());
+			novaReserva.setSetor(ingresso.getNome());
 			novaReserva.setUsuario(usuario);
 
-			return retornaReservaDTO(novaReserva);
+			Reservas reservaCriada = reservaRepository.save(novaReserva);
+			reservasCriadas.add(reservaCriada);
+
 		}
+
+		return reservasCriadas;
+
+//		Reservas reservaExistente = reservaRepository.findByUsuarioAndIngresso_Id(usuario,
+//				optionalIngresso.get().getId());  
+//
+//		
+//		
+//		if (reservaExistente != null) {
+//
+//			int novaQuantidade = reservaExistente.getQuantidadeIngresso() + contador;
+//			reservaExistente.setQuantidadeIngresso(novaQuantidade);
+//			reservaExistente.setDataCriacao(LocalDateTime.now());
+//			reservaExistente.precoTotal(optionalIngresso.get().getValor(), contador);
+//
+//			return reservaRepository.save(reservaExistente);
+//
+//		} else {
+//		
+//			Reservas novaReserva = new Reservas();
+//			novaReserva.setIngresso(itemCarrinho.getIngresso());
+//			novaReserva.setDataCriacao(LocalDateTime.now());
+//			novaReserva.setQuantidadeIngresso(contador);
+//			novaReserva.precoTotal(optionalIngresso.get().getValor(), contador);
+//			novaReserva.setUsuario(usuario);
+//
+//			  return   reservaRepository.save(novaReserva);
+//		}
+//
+//	}
 
 	}
 

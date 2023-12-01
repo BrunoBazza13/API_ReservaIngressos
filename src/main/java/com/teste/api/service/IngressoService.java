@@ -33,18 +33,18 @@ public class IngressoService {
 	
 	
 
-	public Ingresso criaIngresso(Ingresso ingresso) throws NomeIngressoSetorInvalidoException, SetorNotFoundException, RepositoryNotInjectedException {
+	public Ingresso criaIngresso(Ingresso ingresso)  {
 
 		Optional<Setores> setor = setorService.obetemSetorPorId(ingresso.getSetor().getId());
 
 
-		   if (!setor.isPresent()) {
-		       throw new SetorNotFoundException("Setor com id " + ingresso.getSetor().getId() + " não encontrado");
-		   }
-
-		   if (!ingresso.getNome().equalsIgnoreCase(setor.get().getNome())) {
-		       throw new NomeIngressoSetorInvalidoException("O nome do ingresso não corresponde ao nome do setor");
-		   }
+//		   if (!setor.isPresent()) {
+//		       throw new SetorNotFoundException("Setor com id " + ingresso.getSetor().getId() + " não encontrado");
+//		   }
+//
+//		   if (!ingresso.getNome().equalsIgnoreCase(setor.get().getNome())) {
+//		       throw new NomeIngressoSetorInvalidoException("O nome do ingresso não corresponde ao nome do setor");
+//		   }
 
 		   return ingressoRepository.save(ingresso);
 		}

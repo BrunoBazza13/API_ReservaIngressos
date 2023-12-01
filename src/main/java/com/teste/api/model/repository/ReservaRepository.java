@@ -9,10 +9,10 @@ import com.teste.api.model.entidades.Usuario;
 public interface ReservaRepository extends JpaRepository<Reservas, Integer> {
 
 
-	@Query("SELECT COALESCE(SUM(ic.quantidadeIngresso), 0) FROM Reservas ic " + "JOIN ic.ingressos i "
+	@Query("SELECT COALESCE(SUM(ic.quantidadeIngresso), 0) FROM Reservas ic " + "JOIN ic.ingresso i "
 			+ "JOIN i.setor s " + "WHERE s.id = :setorId")
 	int getTotalQuantidadePorSetor(@Param("setorId") int setorId);
 
-	Reservas findByUsuarioAndIngressos_Id(Usuario usuario, int ingressoId);
+	Reservas findByUsuarioAndIngresso_Id(Usuario usuario, int ingressoId);
 
 }

@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.teste.api.exception.NomeIngressoSetorInvalidoException;
 import com.teste.api.exception.RepositoryNotInjectedException;
 import com.teste.api.exception.SetorNotFoundException;
+import com.teste.api.model.dto.IngressoDTO;
 //import com.teste.api.model.dto.ItemCarrinhoDTO;
-import com.teste.api.model.dto.ReservaDTO;
+import com.teste.api.model.dto.ReservasDTO;
 import com.teste.api.model.entidades.Reservas;
 //import com.teste.api.service.ItemCarrinhoService;
 import com.teste.api.service.ReservaService;
@@ -36,25 +37,26 @@ public class ReservaController {
 	private HttpSession session;
 
 	@PostMapping
-	public ResponseEntity<ReservaDTO> criarItemCarrinho(@Valid @RequestBody Reservas reserva)	throws RepositoryNotInjectedException, NomeIngressoSetorInvalidoException, SetorNotFoundException {
+	public ResponseEntity<String> criarItemCarrinho(@RequestBody Reservas reserva) {
 
-		ReservaDTO reservaCriada = reservaService.adicionaAosMeusIngressos(reserva);
+		List<Reservas> reservaCriada = reservaService.adicionaAosMeusIngressos(reserva);
 
-		List<ReservaDTO> reservasNaSessao = (List<ReservaDTO>) session.getAttribute("carrinho");
+		List<ReservasDTO> reservaDTO = reservaService.retornaReservaDTO(reservaCriada);
+
+		List<ReservasDTO> reservasNaSessao = (List<ReservasDTO>) session.getAttribute("carrinho");
 
 		if (reservasNaSessao == null) {
 			reservasNaSessao = new ArrayList<>();
 		}
-		
-		 reservasNaSessao.add(reservaCriada);
+
+		reservasNaSessao.addAll(reservaDTO);
 
 		session.setAttribute("carrinho", reservasNaSessao);
-		
-		
+
 		if (reservaCriada == null) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ingresso indisponivel");
 		} else {
-			return ResponseEntity.ok(reservaCriada);
+			return ResponseEntity.ok("Reserva efetuada com sucesso");
 		}
 
 	}
@@ -71,10 +73,10 @@ public class ReservaController {
 //	}
 
 	@GetMapping
-	public ResponseEntity<List<ReservaDTO>> getListarItemCarrinho() {
-		List<ReservaDTO> reservas = reservaService.listaReserva();
+	public ResponseEntity<List<ReservasDTO>> getListarItemCarrinho() {
+		List<ReservasDTO> reservas = reservaService.listaReserva();
 
-		return new ResponseEntity<List<ReservaDTO>>(reservas, HttpStatus.OK);
+		return new ResponseEntity<List<ReservasDTO>>(reservas, HttpStatus.OK);
 	}
 
 }

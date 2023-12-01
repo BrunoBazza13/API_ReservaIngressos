@@ -27,13 +27,13 @@ public class Setores {
 	@ManyToMany(mappedBy = "setores")
 	private Set<Evento> eventos = new HashSet<>();
 
-	@NotBlank(message = "Por favor informar a quantidade!")
+	//@NotBlank(message = "Por favor informar a quantidade!")
 	private int quantidadePessoas;
 
-	@NotBlank(message = "Por favor informar o nome do setor!")
+	//@NotBlank(message = "Por favor informar o nome do setor!")
 	private String nome;
 
-	@NotBlank(message = "Por favor informar o tipo do setor!")
+	//@NotBlank(message = "Por favor informar o tipo do setor!")
 	private String tipo;
 
 	public Setores() {

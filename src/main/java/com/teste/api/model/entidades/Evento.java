@@ -20,8 +20,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
 public class Evento {
 
 	@Id
@@ -33,7 +31,7 @@ public class Evento {
 	private Local local;
 
 	@NotBlank(message = "A inserção do nome do evento é obrigatória!")
-	private String nome;
+	private String nomeEvento;
 
 	@OneToMany(mappedBy = "evento")
 	private List<Ingresso> ingressos;
@@ -45,7 +43,6 @@ public class Evento {
 	@Lob
 	private byte[] imagem;
 
-	
 	private String descricao;
 	private Date data;
 	private String atracao;
@@ -55,13 +52,15 @@ public class Evento {
 
 	}
 
-	public Evento(Local local, Set<Setores> setores, byte[] imagem, String nome, String descricao, Date data,
-			String atracao, int totalPessoas, String nomeDoEvento) {
+	public Evento(int id, Local local, String nomeEvento, List<Ingresso> ingressos, Set<Setores> setores, byte[] imagem,
+			String descricao, Date data, String atracao, int totalPessoas) {
 		super();
+		this.id = id;
 		this.local = local;
+		this.nomeEvento = nomeEvento;
+		this.ingressos = ingressos;
 		this.setores = setores;
 		this.imagem = imagem;
-		this.nome = nome;
 		this.descricao = descricao;
 		this.data = data;
 		this.atracao = atracao;
@@ -83,7 +82,6 @@ public class Evento {
 	public void setLocal(Local local) {
 		this.local = local;
 	}
-
 
 	public List<Ingresso> getIngressos() {
 		return ingressos;
@@ -107,14 +105,6 @@ public class Evento {
 
 	public void setImagem(byte[] imagem) {
 		this.imagem = imagem;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
 	}
 
 	public String getDescricao() {
@@ -148,7 +138,13 @@ public class Evento {
 	public void setTotalPessoas(int totalPessoas) {
 		this.totalPessoas = totalPessoas;
 	}
-	
-	
+
+	public String getNomeEvento() {
+		return nomeEvento;
+	}
+
+	public void setNomeEvento(String nomeEvento) {
+		this.nomeEvento = nomeEvento;
+	}
 
 }

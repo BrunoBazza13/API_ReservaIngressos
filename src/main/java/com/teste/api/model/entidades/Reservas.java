@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.teste.api.model.dto.IngressoDTO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,10 +18,8 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
-@Getter
-@Setter
 public class Reservas {
 
 	@Id
@@ -28,7 +28,7 @@ public class Reservas {
 
 	@ManyToMany
 	@JoinTable(name = "reserva_ingresso", joinColumns = @JoinColumn(name = "reserva_id"), inverseJoinColumns = @JoinColumn(name = "ingresso_id"))
-	private Set<Ingresso> ingressos = new HashSet<>();
+	private Set<Ingresso> ingresso = new HashSet<>();
 
 	@ManyToOne
 	@JoinColumn(name = "usuario_id")
@@ -37,26 +37,42 @@ public class Reservas {
 	private int quantidadeIngresso;
 
 	private LocalDateTime dataCriacao;
-	
-	
+
 	private double precoTotal;
+
+	private String evento;
+
+	private String setor;
 
 	public Reservas() {
 
 	}
 
-	public Reservas(Set<Ingresso> ingressos, Pedido pedido, Usuario usuario, Setores setor, int quantidadeReserva,
-			LocalDateTime dataCriacao) {
+	public Reservas(int id, Set<Ingresso> ingresso, Usuario usuario, int quantidadeIngresso, LocalDateTime dataCriacao,
+			double precoTotal, String evento, String setor) {
 		super();
-		this.ingressos = ingressos;
-		this.quantidadeIngresso = quantidadeReserva;
+		this.id = id;
+		this.ingresso = ingresso;
+		this.usuario = usuario;
+		this.quantidadeIngresso = quantidadeIngresso;
 		this.dataCriacao = dataCriacao;
+		this.precoTotal = precoTotal;
+		this.evento = evento;
+		this.setor = setor;
 	}
 
-	public boolean contemIngresso(Ingresso ingresso) {
-		return this.ingressos.contains(ingresso);
+	public Set<Ingresso> getIngresso() {
+		return ingresso;
 	}
-	
+
+	public void setIngresso(Set<Ingresso> ingresso) {
+		this.ingresso = ingresso;
+	}
+
+	public void setPrecoTotal(double precoTotal) {
+		this.precoTotal = precoTotal;
+	}
+
 	public double precoTotal(double quantidadeIngresso, double preco) {
 		return this.precoTotal = quantidadeIngresso * preco;
 	}
@@ -73,28 +89,12 @@ public class Reservas {
 		this.id = id;
 	}
 
-	public Set<Ingresso> getIngressos() {
-		return ingressos;
-	}
-
-	public void setIngressos(Set<Ingresso> ingressos) {
-		this.ingressos = ingressos;
-	}
-
 	public Usuario getUsuario() {
 		return usuario;
 	}
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
-	}
-
-	public int getQuantidadeIngresso() {
-		return quantidadeIngresso;
-	}
-
-	public void setQuantidadeIngresso(int quantidadeIngresso) {
-		this.quantidadeIngresso = quantidadeIngresso;
 	}
 
 	public LocalDateTime getDataCriacao() {
@@ -109,6 +109,28 @@ public class Reservas {
 		return precoTotal;
 	}
 
-	
+	public int getQuantidadeIngresso() {
+		return quantidadeIngresso;
+	}
+
+	public void setQuantidadeIngresso(int quantidadeIngresso) {
+		this.quantidadeIngresso = quantidadeIngresso;
+	}
+
+	public String getEvento() {
+		return evento;
+	}
+
+	public void setEvento(String evento) {
+		this.evento = evento;
+	}
+
+	public String getSetor() {
+		return setor;
+	}
+
+	public void setSetor(String setor) {
+		this.setor = setor;
+	}
 
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.teste.api.exception.RepositoryNotInjectedException;
 import com.teste.api.exception.UsuarioNotFoundException;
-import com.teste.api.model.dto.ReservaDTO;
+import com.teste.api.model.dto.ReservasDTO;
 import com.teste.api.model.entidades.Reservas;
 import com.teste.api.model.entidades.Usuario;
 //import com.teste.api.model.repository.ItemCarrinhoRepository;
@@ -34,7 +34,7 @@ public class UsuarioService {
 
 //	@Autowired
 //	private ReservaService reservaService;
-	
+
 	@Autowired
 	private ModelMapper modelMapper;
 
@@ -60,38 +60,40 @@ public class UsuarioService {
 
 		novoUsuario.setSenha(encryptedPassword);
 
-		Usuario usuario = usuarioRepository.save(novoUsuario);
+		// Reservas itemCarrinho = new Reservas(usuario);
 
-		Reservas itemCarrinho = new Reservas(usuario);
+		// reservaRepository.save(itemCarrinho);
 
-		//reservaRepository.save(itemCarrinho);
-
-		return novoUsuario;
+		return usuarioRepository.save(novoUsuario);
 
 	}
 
 	public boolean loginUsuario(String login, String senha) {
+
 		Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findByLogin(login));
+		Usuario user = null;
 
 		if (usuario.isPresent()) {
-			Usuario user = usuario.get();
+			user = usuario.get();
 
-			if (passwordEncoder.matches(senha, user.getPassword())) {
+			if (passwordEncoder.matches(senha, user.getSenha())) {
 				return true;
 			}
 		}
+
+		 passwordEncoder.matches(senha, user.getPassword());
+
 		return false;
 	}
 
-	public List<ReservaDTO> obterIdCarrinhoDoUsuario(String login) {
+	public List<ReservasDTO> obterIdCarrinhoDoUsuario(String login) {
 		Usuario usuario = usuarioRepository.findByLogin(login);
 
-		if (usuario != null && usuario.getItemCarrinho() != null && !usuario.getItemCarrinho().isEmpty()) {
-			List<Reservas> reservas = usuario.getItemCarrinho();
+		if (usuario != null && usuario.getReservas() != null && !usuario.getReservas().isEmpty()) {
+			List<Reservas> reservas = usuario.getReservas();
 
-			 return reservas.stream()
-			            .map(reserva -> modelMapper.map(reserva, ReservaDTO.class))
-			            .collect(Collectors.toList());
+			return reservas.stream().map(reserva -> modelMapper.map(reserva, ReservasDTO.class))
+					.collect(Collectors.toList());
 
 		}
 		return null;
