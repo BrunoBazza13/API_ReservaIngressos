@@ -12,12 +12,10 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+
 
 @Entity
-@Getter
-@Setter
+
 public class Ingresso {
 
 	@Id

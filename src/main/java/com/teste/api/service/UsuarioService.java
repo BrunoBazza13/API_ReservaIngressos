@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 //import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +24,7 @@ import com.teste.api.model.repository.ReservaRepository;
 import com.teste.api.model.repository.UsuarioRepository;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -31,9 +34,6 @@ public class UsuarioService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-//	@Autowired
-//	private ReservaService reservaService;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -49,44 +49,38 @@ public class UsuarioService {
 
 	public Usuario criaUsuario(Usuario novoUsuario) {
 
-		Optional<Usuario> existeCPf = Optional.ofNullable(usuarioRepository.findByCpf(novoUsuario.getCpf()));
+		Optional<Usuario> existeCPf = usuarioRepository.findByCpf(novoUsuario.getCpf());
 		Optional<Usuario> existeEmail = Optional.ofNullable(usuarioRepository.findByLogin(novoUsuario.getLogin()));
 
 		if (existeCPf.isPresent() || existeEmail.isPresent()) {
 			return null;
 		}
 
-		String encryptedPassword = new BCryptPasswordEncoder().encode(novoUsuario.getSenha());
+		String encryptedPassword = new BCryptPasswordEncoder().encode(novoUsuario.getPassword());
 
 		novoUsuario.setSenha(encryptedPassword);
-
-		// Reservas itemCarrinho = new Reservas(usuario);
-
-		// reservaRepository.save(itemCarrinho);
 
 		return usuarioRepository.save(novoUsuario);
 
 	}
 
-	public boolean loginUsuario(String login, String senha) {
+//	public boolean loginUsuario(String login, String senha) {
+//
+//		Usuario usuario = usuarioRepository.findByLogin(login);
+//
+//		if (usuario != null) {
+//
+//			if (passwordEncoder.matches(senha, usuario.getPassword())) {
+//				return true;
+//			}
+//		}
+//
+//		passwordEncoder.matches(senha, usuario.getPassword());
+//
+//		return false;
+//	}
 
-		Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findByLogin(login));
-		Usuario user = null;
-
-		if (usuario.isPresent()) {
-			user = usuario.get();
-
-			if (passwordEncoder.matches(senha, user.getSenha())) {
-				return true;
-			}
-		}
-
-		 passwordEncoder.matches(senha, user.getPassword());
-
-		return false;
-	}
-
-	public List<ReservasDTO> obterIdCarrinhoDoUsuario(String login) {
+	public List<ReservasDTO> obterReservaDoUsuario(String login) {
 		Usuario usuario = usuarioRepository.findByLogin(login);
 
 		if (usuario != null && usuario.getReservas() != null && !usuario.getReservas().isEmpty()) {
@@ -116,6 +110,12 @@ public class UsuarioService {
 		}
 		return ServiceUtils.atualizarEntidade(atualizaUsuario.getId(), atualizaUsuario, usuarioRepository);
 
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		return usuarioRepository.findByLogin(username);
 	}
 
 }

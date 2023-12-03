@@ -7,12 +7,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.Setter;
+
 
 @Entity
-@Getter
-@Setter
 public class Local {
 
 	@Id

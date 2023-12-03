@@ -8,7 +8,6 @@ public class ReservasDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private int id;
-	// private Set<IngressoDTO> ingresso;
 	private String evento;
 	private String setor;
 	private int usuarioId;

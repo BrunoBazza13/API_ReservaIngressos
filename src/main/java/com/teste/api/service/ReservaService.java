@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.teste.api.model.dto.ReservasDTO;
 import com.teste.api.model.entidades.Ingresso;
 import com.teste.api.model.entidades.Reservas;
@@ -36,6 +37,8 @@ public class ReservaService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	
 
 	public ReservaService(ReservaRepository reservaRepository) {
 		super();
@@ -50,7 +53,7 @@ public class ReservaService {
 
 	public List<ReservasDTO> retornaReservaDTO(List<Reservas> reservas) {
 
-		//return modelMapper.map(reserva, ReservasDTO.class);
+		// return modelMapper.map(reserva, ReservasDTO.class);
 		return reservas.stream().map(reserva -> modelMapper.map(reserva, ReservasDTO.class))
 				.collect(Collectors.toList());
 
@@ -77,8 +80,10 @@ public class ReservaService {
 		return true;
 	}
 
-	public List<Reservas> adicionaAosMeusIngressos(Reservas itemCarrinho) {
+	public List<Reservas> adicionaAosMeusIngressos(Reservas itemCarrinho, String token) {
 
+	//	Usuario usuario = jwtUtils.extractUserFromToken(token);
+		
 		Usuario usuario = usuarioService.obterUsuarioPorId(itemCarrinho.getUsuario().getId());
 
 		List<Reservas> reservasCriadas = new ArrayList<>();
@@ -86,12 +91,11 @@ public class ReservaService {
 		Optional<Setores> setor = null;
 		Optional<Ingresso> optionalIngresso = null;
 
-
 		for (Ingresso ingressoRequest : itemCarrinho.getIngresso()) {
 			optionalIngresso = ingressoService.obterIngressoPorId(ingressoRequest.getId());
 
 			Ingresso ingresso = optionalIngresso.get();
-			
+
 			int quantidade = ingressoRequest.getQuantidade();
 
 			setor = setorService.obetemSetorPorId(optionalIngresso.get().getSetor().getId());
@@ -99,7 +103,6 @@ public class ReservaService {
 			if (!estaCheio(setor.get(), itemCarrinho, optionalIngresso.get())) {
 				return null;
 			}
-		
 
 			Reservas novaReserva = new Reservas();
 			novaReserva.setIngresso(itemCarrinho.getIngresso());
@@ -117,6 +120,7 @@ public class ReservaService {
 
 		return reservasCriadas;
 
+	}
 //		Reservas reservaExistente = reservaRepository.findByUsuarioAndIngresso_Id(usuario,
 //				optionalIngresso.get().getId());  
 //
@@ -144,7 +148,5 @@ public class ReservaService {
 //		}
 //
 //	}
-
-	}
 
 }

@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,10 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.teste.api.exception.InvalidCredentialsException;
 import com.teste.api.model.dto.AuthenticationDTO;
-import com.teste.api.model.dto.IngressoDTO;
 import com.teste.api.model.dto.ReservasDTO;
-import com.teste.api.model.entidades.Evento;
 import com.teste.api.model.entidades.Usuario;
+import com.teste.api.service.TokenService;
 import com.teste.api.service.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,23 +34,33 @@ public class UsuarioController {
 	private UsuarioService usuarioService;
 
 	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private TokenService tokenService;
+
+	@Autowired
 	private HttpSession session;
 
 	@PostMapping("/login")
-	public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
+	public ResponseEntity<String> login(@RequestBody @Valid AuthenticationDTO data) {
 
-		boolean loginUsuario = usuarioService.loginUsuario(data.login(), data.senha());
+		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+				data.login(), data.senha());
 
-		if (!loginUsuario) {
+		Authentication auth = this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+
+		var token = tokenService.gerarToken((Usuario) auth.getPrincipal());
+
+		if (token == null) {
 			throw new InvalidCredentialsException("Senha ou email invalidos");
 
 		} else {
-			List<ReservasDTO> reservas = usuarioService.obterIdCarrinhoDoUsuario(data.login());
+			List<ReservasDTO> reservas = usuarioService.obterReservaDoUsuario(data.login());
 
 			session.setAttribute("carrinho", reservas);
 
-			return ResponseEntity.status(HttpStatus.OK).body("login bem sucedido");
-
+			return ResponseEntity.status(HttpStatus.OK).body("login bem sucedido " + token);
 		}
 	}
 
@@ -63,7 +75,7 @@ public class UsuarioController {
 		}
 	}
 
-	@PostMapping(path = "/criarUsuario") // throws NomeIngressoSetorInvalidoException
+	@PostMapping(path = "/criarUsuario") 
 	public ResponseEntity<String> criaUsuario(@RequestBody @Valid Usuario data) {
 
 		Usuario usuario = usuarioService.criaUsuario(data);

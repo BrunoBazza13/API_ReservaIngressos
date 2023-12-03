@@ -10,13 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.teste.api.exception.NomeIngressoSetorInvalidoException;
-import com.teste.api.exception.RepositoryNotInjectedException;
-import com.teste.api.exception.SetorNotFoundException;
-import com.teste.api.model.dto.IngressoDTO;
 //import com.teste.api.model.dto.ItemCarrinhoDTO;
 import com.teste.api.model.dto.ReservasDTO;
 import com.teste.api.model.entidades.Reservas;
@@ -24,7 +21,6 @@ import com.teste.api.model.entidades.Reservas;
 import com.teste.api.service.ReservaService;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/reservas")
@@ -37,9 +33,9 @@ public class ReservaController {
 	private HttpSession session;
 
 	@PostMapping
-	public ResponseEntity<String> criarItemCarrinho(@RequestBody Reservas reserva) {
+	public ResponseEntity<String> criarReserva(@RequestHeader("Authorization") String token, @RequestBody Reservas reserva) {
 
-		List<Reservas> reservaCriada = reservaService.adicionaAosMeusIngressos(reserva);
+		List<Reservas> reservaCriada = reservaService.adicionaAosMeusIngressos(reserva, token);
 
 		List<ReservasDTO> reservaDTO = reservaService.retornaReservaDTO(reservaCriada);
 
@@ -61,6 +57,24 @@ public class ReservaController {
 
 	}
 
+	@GetMapping("/carrinho")
+	public ResponseEntity<?> getCarrinho(HttpSession session) {
+		List<ReservasDTO> carrinhos = (List<ReservasDTO>) session.getAttribute("carrinho");
+
+		if (carrinhos != null && !carrinhos.isEmpty()) {
+			return ResponseEntity.ok(carrinhos);
+		} else {
+			return ResponseEntity.status(HttpStatus.OK).body("Não há ingressos reservados");
+		}
+	}
+
+//	@GetMapping
+//	public ResponseEntity<List<ReservasDTO>> getListarItemCarrinho() {
+//		List<ReservasDTO> reservas = reservaService.listaReserva();
+//
+//		return new ResponseEntity<List<ReservasDTO>>(reservas, HttpStatus.OK);
+//	}
+
 //	@GetMapping("/buscaPorId/{id}")
 //	public ResponseEntity<ReservaDTO> getItensCarrinho(@PathVariable int id) {
 //
@@ -71,12 +85,5 @@ public class ReservaController {
 //		}
 //		return new ResponseEntity<ReservaDTO>(carrinhos, HttpStatus.OK);
 //	}
-
-	@GetMapping
-	public ResponseEntity<List<ReservasDTO>> getListarItemCarrinho() {
-		List<ReservasDTO> reservas = reservaService.listaReserva();
-
-		return new ResponseEntity<List<ReservasDTO>>(reservas, HttpStatus.OK);
-	}
 
 }

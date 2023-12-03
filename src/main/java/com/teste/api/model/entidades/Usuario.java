@@ -16,15 +16,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.Setter;
+
 
 
 @Entity
-public class Usuario implements UserDetails {
+public class Usuario implements UserDetails{
 
-	private static final long serialVersionUID = 1L;
-
+	
 	@OneToMany(mappedBy = "usuario")
 	private List<Reservas> reservas = new ArrayList<Reservas>();
 
@@ -40,7 +38,7 @@ public class Usuario implements UserDetails {
 	private String login;
 
 	@NotBlank(message = "A inserção da senha é obrigatória!")
-	private String senha;
+	private String password;
 
 	@CPF(message = "Insira um cpf válido!")
 	@NotBlank(message = "A inserção do CPF é obrigatória!")
@@ -60,53 +58,18 @@ public class Usuario implements UserDetails {
 		this.id = id;
 		this.nome = nome;
 		this.login = login;
-		this.senha = senha;
+		this.password = senha;
 		this.cpf = cpf;
 		this.telefone = telefone;
 	}
 
 	public Usuario(String login, String senha) {
 		this.login = login;
-		this.senha = senha;
+		this.password = senha;
 
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return false;
-	}
-
-	@Override
-	public String getPassword() {
-
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-
-		return null;
-	}
+	
 
 	public List<Reservas> getReservas() {
 		return reservas;
@@ -117,7 +80,7 @@ public class Usuario implements UserDetails {
 	}
 
 	public static long getSerialversionuid() {
-		return serialVersionUID;
+		return getSerialversionuid();
 	}
 
 	public int getId() {
@@ -145,11 +108,11 @@ public class Usuario implements UserDetails {
 	}
 
 	public String getSenha() {
-		return senha;
+		return password;
 	}
 
 	public void setSenha(String senha) {
-		this.senha = senha;
+		this.password = senha;
 	}
 
 	public String getCpf() {
@@ -167,5 +130,52 @@ public class Usuario implements UserDetails {
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return List.of(new SimpleGrantedAuthority("USER_ROLE"));
+	}
+
+	@Override
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return password;
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return login;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
+	
+
+
 
 }
