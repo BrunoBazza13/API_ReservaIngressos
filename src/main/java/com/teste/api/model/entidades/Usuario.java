@@ -17,12 +17,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-
-
 @Entity
-public class Usuario implements UserDetails{
+public class Usuario implements UserDetails {
 
-	
 	@OneToMany(mappedBy = "usuario")
 	private List<Reservas> reservas = new ArrayList<Reservas>();
 
@@ -38,7 +35,7 @@ public class Usuario implements UserDetails{
 	private String login;
 
 	@NotBlank(message = "A inserção da senha é obrigatória!")
-	private String password;
+	private String senha;
 
 	@CPF(message = "Insira um cpf válido!")
 	@NotBlank(message = "A inserção do CPF é obrigatória!")
@@ -53,23 +50,23 @@ public class Usuario implements UserDetails{
 
 	}
 
-	public Usuario(int id, String nome, String login, String senha, String cpf, String telefone) {
+	public Usuario(List<Reservas> reservas, int id, String nome, String login, String password, String cpf,
+			String telefone) {
 		super();
+		this.reservas = reservas;
 		this.id = id;
 		this.nome = nome;
 		this.login = login;
-		this.password = senha;
+		this.senha = password;
 		this.cpf = cpf;
 		this.telefone = telefone;
 	}
 
-	public Usuario(String login, String senha) {
+	public Usuario(String login, String password) {
 		this.login = login;
-		this.password = senha;
+		this.senha = password;
 
 	}
-
-	
 
 	public List<Reservas> getReservas() {
 		return reservas;
@@ -108,11 +105,11 @@ public class Usuario implements UserDetails{
 	}
 
 	public String getSenha() {
-		return password;
+		return senha;
 	}
 
 	public void setSenha(String senha) {
-		this.password = senha;
+		this.senha = senha;
 	}
 
 	public String getCpf() {
@@ -140,7 +137,7 @@ public class Usuario implements UserDetails{
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return password;
+		return senha;
 	}
 
 	@Override
@@ -172,10 +169,5 @@ public class Usuario implements UserDetails{
 		// TODO Auto-generated method stub
 		return true;
 	}
-
-
-	
-
-
 
 }

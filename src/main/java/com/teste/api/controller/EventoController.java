@@ -51,7 +51,7 @@ public class EventoController {
 	       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao processar a imagem: " + e.getMessage());
 	   }
 	   Evento eventoAdicionado = eventoService.criarEvento(novoEvento);
-	   return ResponseEntity.status(HttpStatus.CREATED).body("Evento criado com sucesso: " + eventoAdicionado);
+	   return ResponseEntity.status(HttpStatus.CREATED).body("Evento criado com sucesso: ");
 	}
 
 

@@ -1,6 +1,8 @@
 package com.teste.api.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,8 +45,10 @@ public class UsuarioController {
 	private HttpSession session;
 
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody @Valid AuthenticationDTO data) {
+	public ResponseEntity<Map<String, String>> login(@RequestBody @Valid AuthenticationDTO data) {
 
+		System.out.println(data.senha());
+		
 		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 				data.login(), data.senha());
 
@@ -57,10 +61,12 @@ public class UsuarioController {
 
 		} else {
 			List<ReservasDTO> reservas = usuarioService.obterReservaDoUsuario(data.login());
-
 			session.setAttribute("carrinho", reservas);
 
-			return ResponseEntity.status(HttpStatus.OK).body("login bem sucedido " + token);
+			Map<String, String> response = new HashMap<>();
+			response.put("token", token);
+
+			return ResponseEntity.status(HttpStatus.OK).body(response);
 		}
 	}
 
@@ -75,16 +81,17 @@ public class UsuarioController {
 		}
 	}
 
-	@PostMapping(path = "/criarUsuario") 
-	public ResponseEntity<String> criaUsuario(@RequestBody @Valid Usuario data) {
+	@PostMapping(path = "/criarUsuario")
+	public ResponseEntity<Usuario> criaUsuario(@RequestBody @Valid Usuario data) {
 
 		Usuario usuario = usuarioService.criaUsuario(data);
 
 		if (usuario == null) {
-			return ResponseEntity.badRequest().body("e-mail ou cpf ja existe.");
+			//return ResponseEntity.badRequest().body("e-mail ou cpf ja existe.");
+			
 		}
 
-		return ResponseEntity.status(HttpStatus.CREATED).body("Usuário criado com sucesso!");
+		return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
 	}
 //
 //	@GetMapping("/buscaPorID/{id}")

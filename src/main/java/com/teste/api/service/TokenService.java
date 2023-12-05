@@ -29,7 +29,9 @@ public class TokenService {
 
 		try {
 			Algorithm algorihtm = Algorithm.HMAC256(secret);
-			return JWT.create().withIssuer("scheduling").withSubject(usuario.getLogin())
+			return JWT.create().withIssuer("scheduling")
+					.withSubject(usuario.getLogin())
+					
 					.withClaim("id", usuario.getId()).sign(algorihtm);
 
 		} catch (JWTCreationException exception) {
@@ -42,7 +44,10 @@ public class TokenService {
 
 		try {
 			Algorithm algorihtm = Algorithm.HMAC256(secret);
-			return JWT.require(algorihtm).withIssuer("scheduling").build().verify(token).getSubject();
+			return JWT.require(algorihtm)
+					.withIssuer("scheduling")
+					.build()
+					.verify(token).getSubject();
 
 		} catch (JWTVerificationException exceptionVerification) {
 			return "";

@@ -10,7 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import com.teste.api.model.dto.ReservasDTO;
 import com.teste.api.model.entidades.Ingresso;
 import com.teste.api.model.entidades.Reservas;
@@ -37,8 +36,9 @@ public class ReservaService {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
-	
+
+	@Autowired
+	private TokenService tokenService;
 
 	public ReservaService(ReservaRepository reservaRepository) {
 		super();
@@ -82,9 +82,9 @@ public class ReservaService {
 
 	public List<Reservas> adicionaAosMeusIngressos(Reservas itemCarrinho, String token) {
 
-	//	Usuario usuario = jwtUtils.extractUserFromToken(token);
-		
-		Usuario usuario = usuarioService.obterUsuarioPorId(itemCarrinho.getUsuario().getId());
+		int idUsuario = Integer.parseInt(tokenService.validateToken(token));
+
+		Usuario usuario = usuarioService.obterUsuarioPorId(idUsuario);
 
 		List<Reservas> reservasCriadas = new ArrayList<>();
 

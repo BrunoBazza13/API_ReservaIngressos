@@ -18,20 +18,22 @@ public class Local {
 
 	@OneToOne(mappedBy = "local")
 	private Evento evento;
+	
+	private String nome;
 
-	@NotBlank(message = "Por favor informar o cep!")
-	@Pattern(regexp = "^[0-9]{5}-[0-9]{3}$", message = "CEP inválido")
+//	@NotBlank(message = "Por favor informar o cep!")
+//	@Pattern(regexp = "^[0-9]{5}-[0-9]{3}$", message = "CEP inválido")
 	private String cep;
 
-	@NotBlank(message = "Por favor informar a localização!")
-	@Pattern(regexp = "^[a-zA-Z0-9\\s\\-]+$", message = "Logradouro inválido")
+//	@NotBlank(message = "Por favor informar a localização!")
+//	@Pattern(regexp = "^[a-zA-Z0-9\\s\\-]+$", message = "Logradouro inválido")
 	private String logradouro;
 
-	@NotBlank(message = "Por favor informar o núremo da localização!")
+//	@NotBlank(message = "Por favor informar o núremo da localização!")
 	private String numeroLocal;
 
-	@Pattern(regexp = "^[a-zA-Z0-9\\s\\-]+$", message = "Bairro inválido")
-	@NotBlank(message = "Por favor informar o bairro!")
+//	@Pattern(regexp = "^[a-zA-Z0-9\\s\\-]+$", message = "Bairro inválido")
+//	@NotBlank(message = "Por favor informar o bairro!")
 	private String bairro;
 
 	public Local() {
@@ -95,4 +97,15 @@ public class Local {
 		this.bairro = bairro;
 	}
 
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	
+	
+	
+	
 }
