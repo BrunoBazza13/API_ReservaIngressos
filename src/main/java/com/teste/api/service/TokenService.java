@@ -32,7 +32,8 @@ public class TokenService {
 			return JWT.create().withIssuer("scheduling")
 					.withSubject(usuario.getLogin())
 					
-					.withClaim("id", usuario.getId()).sign(algorihtm);
+					.withClaim("id", usuario.getId())
+					.sign(algorihtm);
 
 		} catch (JWTCreationException exception) {
 			throw new RuntimeException("Error while generating token", exception);
@@ -47,7 +48,8 @@ public class TokenService {
 			return JWT.require(algorihtm)
 					.withIssuer("scheduling")
 					.build()
-					.verify(token).getSubject();
+					.verify(token)
+					.getSubject();
 
 		} catch (JWTVerificationException exceptionVerification) {
 			return "";

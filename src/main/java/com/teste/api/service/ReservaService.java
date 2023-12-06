@@ -82,12 +82,13 @@ public class ReservaService {
 
 	public List<Reservas> adicionaAosMeusIngressos(Reservas itemCarrinho, String token) {
 
-		int idUsuario = Integer.parseInt(tokenService.validateToken(token));
+		String loginUsuario = tokenService.validateToken(token);
 
-		Usuario usuario = usuarioService.obterUsuarioPorId(idUsuario);
+		Usuario usuario = usuarioService.obterUsuarioPorLogin(loginUsuario);
 
 		List<Reservas> reservasCriadas = new ArrayList<>();
 
+		Reservas reservaCriada = null;
 		Optional<Setores> setor = null;
 		Optional<Ingresso> optionalIngresso = null;
 
@@ -100,20 +101,35 @@ public class ReservaService {
 
 			setor = setorService.obetemSetorPorId(optionalIngresso.get().getSetor().getId());
 
+			Reservas reservaExistente = reservaRepository.findByUsuarioAndIngresso_Id(usuario,
+					optionalIngresso.get().getId());
+
 			if (!estaCheio(setor.get(), itemCarrinho, optionalIngresso.get())) {
 				return null;
 			}
 
-			Reservas novaReserva = new Reservas();
-			novaReserva.setIngresso(itemCarrinho.getIngresso());
-			novaReserva.setDataCriacao(LocalDateTime.now());
-			novaReserva.setQuantidadeIngresso(quantidade);
-			novaReserva.precoTotal(ingresso.getValor(), quantidade);
-			novaReserva.setEvento(ingresso.getEvento().getNomeEvento());
-			novaReserva.setSetor(ingresso.getNome());
-			novaReserva.setUsuario(usuario);
+			if (reservaExistente != null) {
 
-			Reservas reservaCriada = reservaRepository.save(novaReserva);
+				int novaQuantidade = reservaExistente.getQuantidadeIngresso() + quantidade;
+				reservaExistente.setQuantidadeIngresso(novaQuantidade);
+				reservaExistente.setDataCriacao(LocalDateTime.now());
+				reservaExistente.precoTotal(ingresso.getValor(), quantidade);
+				
+				reservaCriada = reservaRepository.save(reservaExistente);
+			} else {
+
+				Reservas novaReserva = new Reservas();
+				novaReserva.setIngresso(itemCarrinho.getIngresso());
+				novaReserva.setDataCriacao(LocalDateTime.now());
+				novaReserva.setQuantidadeIngresso(quantidade);
+				novaReserva.precoTotal(ingresso.getValor(), quantidade);
+				novaReserva.setEvento(ingresso.getEvento().getNomeEvento());
+				novaReserva.setSetor(ingresso.getNome());
+				novaReserva.setUsuario(usuario);
+
+				reservaCriada = reservaRepository.save(novaReserva);
+			}
+
 			reservasCriadas.add(reservaCriada);
 
 		}
@@ -121,17 +137,13 @@ public class ReservaService {
 		return reservasCriadas;
 
 	}
-//		Reservas reservaExistente = reservaRepository.findByUsuarioAndIngresso_Id(usuario,
-//				optionalIngresso.get().getId());  
+
 //
 //		
 //		
 //		if (reservaExistente != null) {
 //
-//			int novaQuantidade = reservaExistente.getQuantidadeIngresso() + contador;
-//			reservaExistente.setQuantidadeIngresso(novaQuantidade);
-//			reservaExistente.setDataCriacao(LocalDateTime.now());
-//			reservaExistente.precoTotal(optionalIngresso.get().getValor(), contador);
+
 //
 //			return reservaRepository.save(reservaExistente);
 //

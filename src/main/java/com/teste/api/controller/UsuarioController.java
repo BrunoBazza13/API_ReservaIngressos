@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.teste.api.exception.InvalidCredentialsException;
 import com.teste.api.model.dto.AuthenticationDTO;
 import com.teste.api.model.dto.ReservasDTO;
+import com.teste.api.model.entidades.Reservas;
 import com.teste.api.model.entidades.Usuario;
 import com.teste.api.service.TokenService;
 import com.teste.api.service.UsuarioService;
@@ -47,8 +49,6 @@ public class UsuarioController {
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, String>> login(@RequestBody @Valid AuthenticationDTO data) {
 
-		System.out.println(data.senha());
-		
 		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 				data.login(), data.senha());
 
@@ -87,8 +87,8 @@ public class UsuarioController {
 		Usuario usuario = usuarioService.criaUsuario(data);
 
 		if (usuario == null) {
-			//return ResponseEntity.badRequest().body("e-mail ou cpf ja existe.");
-			
+			// return ResponseEntity.badRequest().body("e-mail ou cpf ja existe.");
+
 		}
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuario);

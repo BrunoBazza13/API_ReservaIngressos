@@ -93,11 +93,11 @@ public class UsuarioService implements UserDetailsService {
 		return null;
 	}
 
-	public Usuario obterUsuarioPorId(Integer id) throws RepositoryNotInjectedException {
+	public Usuario obterUsuarioPorLogin(String login) throws RepositoryNotInjectedException {
 		if (usuarioRepository == null) {
 			throw new RepositoryNotInjectedException("UsuarioRepository não foi injetado");
 		}
-		return usuarioRepository.findById(id).orElse(null);
+		return usuarioRepository.findByLogin(login);
 	}
 
 	public Optional<Usuario> atualizaUsuario(Usuario atualizaUsuario) throws RepositoryNotInjectedException {

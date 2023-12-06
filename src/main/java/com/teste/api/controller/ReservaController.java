@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,22 +20,33 @@ import com.teste.api.model.dto.ReservasDTO;
 import com.teste.api.model.entidades.Reservas;
 //import com.teste.api.service.ItemCarrinhoService;
 import com.teste.api.service.ReservaService;
+import com.teste.api.service.TokenService;
+import com.teste.api.service.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/reservas")
 public class ReservaController {
 
 	@Autowired
 	private ReservaService reservaService;
+	
+	@Autowired
+	private UsuarioService usuarioService;
+	
+	@Autowired
+	private TokenService tokenService;
 
 	@Autowired
 	private HttpSession session;
 
 	@PostMapping
 	public ResponseEntity<String> criarReserva(@RequestHeader("Authorization") String token, @RequestBody Reservas reserva) {
-
+		
+	
+		
 		List<Reservas> reservaCriada = reservaService.adicionaAosMeusIngressos(reserva, token);
 
 		List<ReservasDTO> reservaDTO = reservaService.retornaReservaDTO(reservaCriada);
@@ -58,14 +70,24 @@ public class ReservaController {
 	}
 
 	@GetMapping("/carrinho")
-	public ResponseEntity<?> getCarrinho(HttpSession session) {
-		List<ReservasDTO> carrinhos = (List<ReservasDTO>) session.getAttribute("carrinho");
+	public ResponseEntity<?> getCarrinho(@RequestHeader("Authorization") String token) {
+		//List<ReservasDTO> carrinhos = (List<ReservasDTO>) session.getAttribute("carrinho");
 
+		String loginUsuario = tokenService.validateToken(token);
+		
+		List<ReservasDTO> carrinhos = usuarioService.obterReservaDoUsuario(loginUsuario);
+
+		
 		if (carrinhos != null && !carrinhos.isEmpty()) {
 			return ResponseEntity.ok(carrinhos);
 		} else {
 			return ResponseEntity.status(HttpStatus.OK).body("Não há ingressos reservados");
 		}
+	}
+	
+	
+	public void deleteCarrinho() {
+		
 	}
 
 //	@GetMapping

@@ -61,7 +61,8 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/api/local").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/setor").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/evento/cria").permitAll()
-						.requestMatchers(HttpMethod.POST, "/api/usuario/criarUsuario").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/usuario/carrinho").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/ingresso").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/reserva").authenticated()
 						.anyRequest().authenticated())
 
