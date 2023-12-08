@@ -52,11 +52,8 @@ public class ReservaService {
 	}
 
 	public List<ReservasDTO> retornaReservaDTO(List<Reservas> reservas) {
-
-		// return modelMapper.map(reserva, ReservasDTO.class);
 		return reservas.stream().map(reserva -> modelMapper.map(reserva, ReservasDTO.class))
 				.collect(Collectors.toList());
-
 	}
 
 	public int totalIngressos(int setorId) {
@@ -80,6 +77,10 @@ public class ReservaService {
 		return true;
 	}
 
+	public void deleteReserva(int id) {
+		reservaRepository.deleteById(id);
+	}
+
 	public List<Reservas> adicionaAosMeusIngressos(Reservas itemCarrinho, String token) {
 
 		String loginUsuario = tokenService.validateToken(token);
@@ -101,64 +102,24 @@ public class ReservaService {
 
 			setor = setorService.obetemSetorPorId(optionalIngresso.get().getSetor().getId());
 
-			Reservas reservaExistente = reservaRepository.findByUsuarioAndIngresso_Id(usuario,
-					optionalIngresso.get().getId());
-
 			if (!estaCheio(setor.get(), itemCarrinho, optionalIngresso.get())) {
 				return null;
 			}
 
-			if (reservaExistente != null) {
+			Reservas novaReserva = new Reservas();
+			novaReserva.setIngresso(itemCarrinho.getIngresso());
+			novaReserva.setDataCriacao(LocalDateTime.now());
+			novaReserva.setQuantidadeIngresso(quantidade);
+			novaReserva.calcularPrecoTotal(ingresso.getValor(), quantidade);
+			novaReserva.setEvento(ingresso.getEvento().getNomeEvento());
+			novaReserva.setSetor(ingresso.getNome());
+			novaReserva.setUsuario(usuario);
 
-				int novaQuantidade = reservaExistente.getQuantidadeIngresso() + quantidade;
-				reservaExistente.setQuantidadeIngresso(novaQuantidade);
-				reservaExistente.setDataCriacao(LocalDateTime.now());
-				reservaExistente.precoTotal(ingresso.getValor(), quantidade);
-				
-				reservaCriada = reservaRepository.save(reservaExistente);
-			} else {
-
-				Reservas novaReserva = new Reservas();
-				novaReserva.setIngresso(itemCarrinho.getIngresso());
-				novaReserva.setDataCriacao(LocalDateTime.now());
-				novaReserva.setQuantidadeIngresso(quantidade);
-				novaReserva.precoTotal(ingresso.getValor(), quantidade);
-				novaReserva.setEvento(ingresso.getEvento().getNomeEvento());
-				novaReserva.setSetor(ingresso.getNome());
-				novaReserva.setUsuario(usuario);
-
-				reservaCriada = reservaRepository.save(novaReserva);
-			}
+			reservaCriada = reservaRepository.save(novaReserva);
 
 			reservasCriadas.add(reservaCriada);
 
 		}
-
 		return reservasCriadas;
-
 	}
-
-//
-//		
-//		
-//		if (reservaExistente != null) {
-//
-
-//
-//			return reservaRepository.save(reservaExistente);
-//
-//		} else {
-//		
-//			Reservas novaReserva = new Reservas();
-//			novaReserva.setIngresso(itemCarrinho.getIngresso());
-//			novaReserva.setDataCriacao(LocalDateTime.now());
-//			novaReserva.setQuantidadeIngresso(contador);
-//			novaReserva.precoTotal(optionalIngresso.get().getValor(), contador);
-//			novaReserva.setUsuario(usuario);
-//
-//			  return   reservaRepository.save(novaReserva);
-//		}
-//
-//	}
-
 }

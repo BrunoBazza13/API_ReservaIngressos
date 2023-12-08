@@ -68,8 +68,8 @@ public class Reservas {
 		this.precoTotal = precoTotal;
 	}
 
-	public double precoTotal(double quantidadeIngresso, double preco) {
-		return this.precoTotal = quantidadeIngresso * preco;
+	public void calcularPrecoTotal(double quantidadeIngresso, double preco) {
+		 this.precoTotal = quantidadeIngresso * preco;
 	}
 
 	public Reservas(Usuario usuario) {

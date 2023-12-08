@@ -64,6 +64,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/usuario/carrinho").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/ingresso").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/reserva").authenticated()
+						.requestMatchers(HttpMethod.DELETE, "/api/reserva").permitAll()
 						.anyRequest().authenticated())
 
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class).build();
